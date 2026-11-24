@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AutoRCA – Incident Triage &amp; Root-Cause Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="orb orb-a"></div><div class="orb orb-b"></div><div class="orb orb-c"></div>
+
+<header class="topbar glass">
+  <div class="brand"><span class="logo">A</span><span>AutoRCA</span></div>
+  <div class="topbar-right">
+    <div class="status" id="status"><span class="dot"></span><span id="statusText">Checking backend…</span></div>
+    <button class="btn ghost" id="resetBtn" type="button">New Incident</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="glass card" id="inputCard">
+    <h1>Paste an incident. Get a root cause.</h1>
+    <p class="muted">Drop in raw logs, a stack trace or a ticket. Try a sample to see the agents work.</p>
+    <div class="pills" id="samples"></div>
+    <textarea id="rawLog" spellcheck="false" placeholder="Paste raw logs, stack trace or incident ticket text (min 10 characters)…"></textarea>
+    <div class="row">
+      <span class="muted small" id="charCount">0 characters</span>
+      <button class="btn primary" id="analyzeBtn" type="button">Analyze Incident</button>
+    </div>
+  </section>
+
+  <div class="error" id="errorBox" hidden></div>
+
+  <section class="glass card" id="pipelineCard" hidden>
+    <div class="card-head">
+      <h2>Live Agent Pipeline</h2>
+      <div class="ids"><span class="mono chip" id="incId">INC-…</span><span class="mono chip" id="thrId">thread…</span></div>
+    </div>
+    <div class="pipe-scroll">
+      <div class="pipeline">
+        <div class="node" id="n-triage"><i class="ic"></i><b>Triage</b><small>8B model</small></div>
+        <div class="edge" id="e1"><span></span></div>
+        <div class="branch">
+          <div class="node" id="n-retrieve_runbooks"><i class="ic"></i><b>Pinecone RAG</b><small>Runbook search</small></div>
+          <div class="node" id="n-parse_signals"><i class="ic"></i><b>Log Parser</b><small>Signal extraction</small></div>
+        </div>
+        <div class="edge" id="e2"><span></span></div>
+        <div class="node" id="n-rca_synthesis"><i class="ic"></i><b>RCA Synthesis</b><small>70B model</small></div>
+        <div class="edge" id="e3"><span></span></div>
+        <div class="node" id="n-safety_critic"><i class="ic"></i><b>Safety Critic</b><small>Command review</small></div>
+        <div class="edge" id="e4"><span></span></div>
+        <div class="node" id="n-human"><i class="ic"></i><b>Human Approval</b><small>Your decision</small></div>
+      </div>
+    </div>
+    <details class="trace">
+      <summary>Execution trace <span class="muted small" id="traceCount">0 events</span></summary>
+      <div class="mono tracelog" id="traceLog"></div>
+    </details>
+  </section>
+
+  <section class="grid" id="results" hidden>
+    <div class="col">
+      <article class="glass card">
+        <h2>Triage Summary</h2>
+        <div class="pills tight" id="triagePills"></div>
+        <p id="triageSummary" class="body"></p>
+      </article>
+      <article class="glass card">
+        <h2>Parsed Signals</h2>
+        <div id="signals"></div>
+      </article>
+      <article class="glass card">
+        <h2>Retrieved Runbooks</h2>
+        <div id="runbooks"></div>
+      </article>
+    </div>
+    <div class="col">
+      <article class="glass card">
+        <h2>Root Cause</h2>
+        <p id="rootCause" class="body"></p>
+      </article>
+      <article class="glass card">
+        <h2>Remediation Steps</h2>
+        <ol id="steps" class="steps"></ol>
+      </article>
+      <article class="glass card">
+        <h2>Proposed Commands</h2>
+        <div id="commands"></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="glass card gate" id="gate" hidden>
+    <div class="card-head"><h2>Human Approval Gate</h2><span class="badge" id="safetyBadge"></span></div>
+    <p class="body" id="safetyFeedback"></p>
+    <label class="small muted" for="notes">Engineer notes (optional)</label>
+    <input type="text" id="notes" placeholder="Add context or override instructions…">
+    <div class="row end">
+      <button class="btn danger" id="rejectBtn" type="button">Reject / Escalate</button>
+      <button class="btn success" id="approveBtn" type="button">Approve &amp; Finalize</button>
+    </div>
+  </section>
+
+  <section class="glass card" id="reportCard" hidden>
+    <div class="card-head"><h2>Final Report</h2><button class="btn ghost" id="copyReport" type="button">Copy Report</button></div>
+    <div class="report" id="report"></div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
