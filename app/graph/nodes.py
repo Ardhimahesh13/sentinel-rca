@@ -69,7 +69,7 @@ def parse_signals_node(state: IncidentState) -> dict:
             content=(
                 "You are an SRE Log Parser. Extract the exact error type, affected service, "
                 "and concrete technical indicators from the raw log,"
-               'Respond strictly in valid JSON with these exact keys: {"error_type": "string", "affected_service": "string", "key_indicators": ["string"]}.'
+              'Respond strictly with a SINGLE JSON object (never a JSON list or array) summarizing the primary incident across all log lines using these exact keys: {"error_type": "string", "affected_service": "string", "key_indicators": ["string"]}.'
             )
         ),
         HumanMessage(content=state["raw_log"]),
