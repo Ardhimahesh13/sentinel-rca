@@ -75,4 +75,6 @@ jobs:
               --name sentinel-rca \
               --restart unless-stopped \
               -p 8000:8000 \
-              --env-file /home/${
+              --env-file $HOME/.env \
+              ${{ env.IMAGE_NAME }}
+            docker image prune -f
